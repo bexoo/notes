@@ -1,0 +1,130 @@
+\documentclass{article}
+\usepackage{exoo}[notoc,fancy]
+
+\newcommand{\sol}{\setlength{\parindent}{0cm}\textbf{\textit{Solution:}}\setlength{\parindent}{1cm} }
+\DeclareMathOperator{\Int}{Int}
+\DeclareMathOperator{\Bd}{Bd}
+\DeclareMathOperator{\osc}{osc}
+
+
+\begin{document}
+
+\title{Analysis 2: Lebesgue Integration and Fourier Series} % Title
+\author{Brady Exoo} % Author
+\date{Spring 2026} % Date
+\maketitle
+
+\tableofcontents
+
+\eject
+
+\section{Mon January 12}
+Midterms 2/23 and 4/13, both in class.
+\subsection{Introduction}
+We use the \vocab{Lebesgue integral} for making sense of the integral when $f$ is not a nice function.
+We use \vocab{Fourier series} for approximating periodic functions by the sum of sine waves.
+Historically, these two topics are actually intertwined!
+
+Suppose we have a series of functions $f_n: [a,b] \to \RR$ all continuous and $f_n \to f$ uniformly. Then we know $f$ is continuous and the integrals converge. 
+
+Now suppose $f_n$ Riemann integrable and $0 \leq f_{n+1} \leq f_n$ and since bounded monotonic sequences converge, both
+\[ \lim_{n \to \infty} f_n(x) \]
+and
+\[ \lim_{n\to \infty} \int_a^b f_n(x) \dd{x} \]
+exist. But is it true that
+\[ \lim_{n\to \infty} \int_a^b f_n (x) \dd{x} = \int_a^b \lim_{n \to \infty} f_n(x) \dd{x}? \]
+For the Riemann Integral, it turns out the answer is no, because the limiting function might not be integrable.
+\begin{example}
+  Fix $[a,b]$. List all rationals in $[a,b]$: $\{q_n\} = [a,b] \cap \QQ$. Then let
+  \[ f_n(x) = \begin{cases}
+  0 & x \in \{q_1,\dots,q_n\} \\ 1 & \text{otherwise}
+\end{cases} \]
+\end{example}
+Here, each $f_n$ is Riemann integrable because it only has finitely many discontinuities, but the limiting function $f_n$ has infinitely many discontinuities, so it is not Riemann integrable. The Lebesgue integral fills in the hole by making the integral of the limit the limit of the integrals.
+
+\subsection{Riemann Integral}
+Riemann Integral was given by successive partitions and then lower sums and upper sums. Namely
+\[ U(P,f) = \sum_{k=1}^{n-1} (p_{k+1}-p_k)\sup(f) \]
+where $\sup(f)$ is on the partition. Lower sums increase and upper sums decrease upon refinements. When they are equal, we define the integral
+\[ \int = \sup_P L(P,f) = \inf_Q U(Q,f). \]
+\begin{lemma}
+  $f$ is Riemann integrable iff for every $\epsilon > 0$ there is a partition $P$ of $[a,b]$ such that $U(P,f) - L(P,f) < \epsilon$.
+\end{lemma}
+\proof $(\implies)$: Since $\sup = \inf$, for $\epsilon > 0$ we can find partitions $Q$ and $P$ such that $U(Q,f) - L(P,f) < \epsilon$. Then let $R = P \cup Q$ and 
+\[ U(R,f) - L(R,f) \leq U(Q,f) - L(P,f) < \epsilon. \]
+$(\impliedby)$: Given $\epsilon > 0$, choose $R$ such that $U(R,f) - L(R,f) < \epsilon$. So $\inf U(Q,f) - \sup L(P,f) < \epsilon$. Since $\epsilon$ is arbitrary, $\sup = \inf$.
+
+This lets us prove
+\begin{theorem}
+  If $f$ is continuous, then $f$ is Riemann integrable.
+\end{theorem}
+\proof Check Real Analysis notes.
+\section{Wed Jan 14}
+Now to characterize integrability, we want to quantify discontinuity.
+\begin{definition}
+  Given $f:[a,b] \to \RR$ and $x \in [a,b]$, let
+\[ \osc(f,x) = \inf_{\delta > 0} \sup\{f(y)-f(z) \mid y,z \in [a,b] \text{ with $|y-x| < \delta$ and $|z-x| < \delta$}\}.\]
+\end{definition}
+\begin{lemma}
+  $f$ is continuous iff $\osc(f,x) = 0$. 
+\end{lemma}
+\proof $(\implies)$: For any $\epsilon > 0$, use continuity to choose $\delta > 0$ that implies $|f(y)-f(x)| < \epsilon$. Then we can bound $\osc$ by $2\epsilon$.
+
+$(\impliedby)$: Given $\epsilon>0$, use $\osc=0$ to choose $\delta > 0$ so $\sup \leq \epsilon$, thus $|f(y)-f(x)| \leq \epsilon$ when $|y-x| < \delta$.
+
+Some notation: a closed interval $I$ has length $|I|$ and interior $\mathring{I} = (a,b)$. Now we introduce our first notion of measure.
+\begin{definition}
+  The \vocab{Jordan Content} of a bounded $A \subseteq \RR$ is
+  \[ J(A) = \inf\{|I_1| + \cdots + |I_n|: I_1 \cup \cdots \cup I_n \supseteq A \} \]
+\end{definition}
+\begin{itemize}
+  \item $J([a,b]) = b-a$ 
+  \item For a finite set $X$ of points, $J(X)=0$, since we can make the $I$s as small as we want.
+\end{itemize}
+\begin{lemma}
+  If $f:[a,b] \to \RR$ is Riemann integrable, then $f$ is bounded and for $\epsilon > 0$, $J(\{x \mid \osc(f,x) \geq \epsilon\}) = 0$. 
+This is saying nearly the same thing as Riemann integrable functions have finitely many discontinuities.
+\end{lemma}
+\proof Assume $f$ is integrable, and fix $\epsilon > 0$. For $\delta > 0$ to be determined, choose a partition $P$ so $U(P,f) - L(P,f) < \delta$. So we have finitely many intervals on which $\sup - \inf$ of $f$ is $< \infty$. Then write $I_k = [p_k,p_{k+1}]$. Call $I_k$ ``good'' if 
+\[\sup_{I_k} f - \inf_{I_k} f < \epsilon .\]
+So if $x \in \mathring{I}_k$ and $I_k$ good, $\osc(f,x) < \epsilon$. Thus the bad intervals and the endpoints of all intervals cover $\{x \mid \osc(f,x) \geq \epsilon\}$.
+Observe 
+\begin{align*}
+  \delta &> U(P,f) - L(P,f) \\
+         &= \sum_k |I_k| \left(\sup_{I_k} f - \inf_{I_k} f \right) \\
+         &\geq \sum_{\text{bad}} \cdots \\
+         &\geq \sum_{\text{bad}} |I_k| \epsilon
+\end{align*}
+so 
+\[ \sum_{\text{bad}} |I_k| < \delta/\epsilon. \]
+Since we can choose $\delta$ after $\epsilon$, we can make this as small as we want, so 
+\[ J(\{x \mid \osc(f,x) \geq \epsilon\}) = 0. \]
+\begin{lemma}
+  If $f$ is bounded and for $\epsilon > 0$, $J(\{x \mid \osc(f,x) \geq \epsilon\}) = 0$, then $f$ is Riemann integrable. 
+\end{lemma}
+\proof $B = \sup_{[a,b]} |f| < \infty$. Fix $\epsilon > 0$. Choose $I_1,\dots,I_n$ so $\osc(f,x) \geq \epsilon \implies x \in I_1 \cup \cdots \cup I_n$ and $|I_1| + \cdots + |I_n| < \epsilon$.
+We can fatten the intervals slightly so we get
+\[ \osc(f,x) \geq \epsilon \implies x \in \mathring{I}_1 \cup \cdots \cup \mathring{I}_n. \]
+We can also merge overlapping $I$s, and now assume all the $I_k$ are disjoint.
+
+Now if $x \in [a,b] \setminus (\mathring{I}_1 \cup \cdots \cup \mathring{I}_n)$, then $\osc(f,x) < \epsilon$. Choose $\delta_x$ such that $\sup f - \inf f < \epsilon$ on $\tilde{I_k} = [a,b] \cap [x-\delta_x, x+\delta_x]$. Since $A = [a,b] \setminus (\mathring{I}_1 \cup \cdots \cup \mathring{I}_n)$, we can choose $x_1, \dots, x_m$ so
+\[ A \subset (x_1-\delta_{x_1}, x_1 + \delta_{x_1}) \cup \cdots. \]
+Now let $P$ be the union of the endpoints of $I_k$ and $\tilde{I}_k$.
+Each $[p_k,p_{k+1}]$ is either contained in one of the $I_j$ or $\tilde{I}_j$. Ok now we are introducing the normal intervals $I_k^\prime = [p_k,p_{k+1}]$. Then 
+\[U(P,f) - L(P,f) = \sum_k |I_k^\prime| (\sup_{I_k^\prime} f - \inf_{I_k^\prime} f). \]
+Splitting this up into the bad and good intervals, the bad cases have are bounded by $\epsilon \cdot 2B$, and the good ones are bounded by $(b-a) \cdot \epsilon$. So both go to $0$ as $\epsilon \to 0$. Thus $f$ is Riemann integrable.
+\begin{theorem}
+  $f:[a,b] \to \RR$ is Riemann integrable iff $f$ is bounded and $\forall \epsilon > 0$, $J(\{x \mid \osc(f,x) \geq \epsilon\}) = 0$.
+\end{theorem}
+But Jordan content is kind of difficult to work with. In particular, it doesn't play nice with infinite sums.
+So we introduce the Lebesgue measure.
+\begin{definition}
+  The \vocab{Lebesgue outer measure} of a set $A \subset \RR$ is 
+  \[m^{*} (A) = \inf \{\sum_{k=1}^\infty |I_k| : \cup_{k=1}^\infty I_k \supseteq A \}. \]
+\end{definition}
+The Lebesgue measure of the rationals is $0$, since if we let
+\[ I_k = [q_k - \epsilon 2^{-k}, q_k + \epsilon 2^{-k}] \]
+the sum of all the lengths is $2\epsilon$.
+
+
+\end{document}

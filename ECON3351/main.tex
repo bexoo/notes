@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{exoo}[notoc,fancy]
+
+\newcommand{\sol}{\setlength{\parindent}{0cm}\textbf{\textit{Solution:}}\setlength{\parindent}{1cm} }
+\newcommand{\pref}{\succsim}
+\newcommand{\notpref}{\not\succsim}
+\DeclareMathOperator{\Int}{Int}
+\DeclareMathOperator{\Bd}{Bd}
+
+
+\begin{document}
+
+\title{Mathematical Economics: Game Theory} % Title
+\author{Brady Exoo} % Author
+\date{Spring 2026} % Date
+\maketitle
+
+\tableofcontents
+
+\eject
+
+\section{Tues January 13}
+Tests on Feb 10, March 26, and April 23. No final.
+\subsection{Individual Decision Making}
+\begin{definition}
+  Given a set $X$, a binary relation on $X$ is a subset $\succsim$ of $X^2$. 
+  We write $x \succsim y$ to denote $(x,y) \in \, \succsim$.
+\end{definition}
+We say a relation on $X$ is transitive if $x \succsim y$ and $y \succsim z \implies x \succsim z$. We say a relation is \vocab{complete} if $\forall x,y$ we have $x \succsim y$ or $y \succsim x$ or both.
+Then a \vocab{rational preference relation} is just a complete, transitive relation.
+% It is my long standing belief that most "philosophy" in literature is just flavor text. Umineko only serves to confirm my bias in this direction. Let me be clear. Umineko is not performing any unique epistomology on the nature of truth.
+%
+\section{Thu Jan 15}
+Given a relation $\pref$, we can define other relations that are useful with the obvious definitions: $\not\succsim$, $\succ$, $\precsim$, $\prec$, $\sim$.
+
+Given a set $X$, a \vocab{utility} is any function $u: X \to \RR$. Any utility generates a binary relation, with $x \pref y \iff u(x) \geq u(y)$.
+
+\begin{prop}
+  If $u$ represents $\succsim$ and $f: u(X) \to \RR$ is strictly increasing, then $f \circ u$ also represents $\pref$.
+\end{prop}
+\proof $x \succsim y \iff u(x) \geq u(y) \iff f(u(x)) \geq f(u(y))$.
+
+So the actual values of the utility don't matter that much! But also:
+\begin{prop}
+  If $X$ is finite, then $\succsim$ has a utility representation.
+\end{prop}
+\proof Just have $u(x)$ be the number of elements in $X$ such that $x \pref y$.
+
+\begin{prop}
+  If $X$ is countable, then $\succsim$ has a utility representation.
+\end{prop}
+\proof Same as above, but sum $2^{-n}$ for each element less than.
+
+\end{document}
